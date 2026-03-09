@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matchmaking Intake Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #f5f0e8;
+    --gold: #c9a96e;
+    --gold-light: #e8d5b0;
+    --gold-dark: #a07840;
+    --ink: #1a1410;
+    --ink-soft: #4a3f35;
+    --ink-lighter: #8a7a6a;
+    --rose: #c4887a;
+    --rose-light: #f0ddd9;
+    --border: rgba(201,169,110,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 10%, rgba(201,169,110,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(196,136,122,0.07) 0%, transparent 50%);
+  }
+
+  .page-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 6vw, 54px);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--gold-dark);
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--ink-lighter);
+    line-height: 1.65;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+
+  .header-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 28px;
+  }
+  .header-divider span { width: 40px; height: 1px; background: var(--gold-light); }
+  .header-divider .diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* Progress */
+  .progress-bar-wrap {
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-lighter);
+  }
+
+  .progress-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold-dark);
+  }
+
+  .progress-track {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .step-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .step-dot {
+    height: 3px;
+    flex: 1;
+    background: var(--border);
+    border-radius: 3px;
+    transition: background 0.4s ease;
+  }
+  .step-dot.done { background: var(--gold); }
+  .step-dot.active { background: var(--gold-dark); }
+
+  /* Step panel */
+  .step-panel {
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+  .step-panel.active { display: block; }
+
+  .step-header {
+    margin-bottom: 36px;
+  }
+
+  .step-number {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .step-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .step-header p {
+    font-size: 14px;
+    color: var(--ink-lighter);
+    line-height: 1.6;
+  }
+
+  /* Form fields */
+  .field-group {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 0;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  label .optional {
+    font-weight: 300;
+    color: var(--ink-lighter);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7a6a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  /* Chip selects */
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    user-select: none;
+  }
+
+  .chip:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .chip.selected {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+  }
+
+  /* Scale */
+  .scale-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-lighter); }
+  .scale-track { display: flex; gap: 6px; }
+  .scale-btn {
+    flex: 1;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    font-size: 13px;
+    color: var(--ink-lighter);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .scale-btn:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .scale-btn.selected { background: var(--gold); border-color: var(--gold); color: white; }
+
+  /* Section divider inside step */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 36px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Navigation */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-lighter);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--ink-soft); border-color: var(--ink-lighter); }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .btn-primary:hover { background: var(--gold-dark); }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: white;
+    padding: 16px 40px;
+    font-size: 13px;
+  }
+  .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(160,120,64,0.3); }
+
+  /* Success */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .success-screen.active { display: block; }
+
+  .success-icon {
+    width: 64px; height: 64px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    font-size: 28px;
+  }
+
+  .success-screen h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .success-screen p {
+    color: var(--ink-lighter);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .page-wrap {
+      padding: 32px 16px 100px;
+    }
+
+    .header {
+      margin-bottom: 36px;
+    }
+
+    .header h1 {
+      font-size: 34px;
+    }
+
+    .header-sub {
+      font-size: 14px;
+    }
+
+    .progress-bar-wrap {
+      margin-bottom: 32px;
+    }
+
+    .step-header {
+      margin-bottom: 28px;
+    }
+
+    .step-header h2 {
+      font-size: 26px;
+    }
+
+    .field-group {
+      gap: 20px;
+    }
+
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+
+    /* Larger tap targets for inputs on mobile */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      padding: 16px;
+      font-size: 16px; /* prevents iOS zoom on focus */
+    }
+
+    /* Chips wrap naturally and are thumb-friendly */
+    .chip {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    /* Scale buttons bigger for thumbs */
+    .scale-btn {
+      height: 48px;
+      font-size: 15px;
+    }
+
+    /* Nav buttons full-width stacked */
+    .nav {
+      flex-direction: column-reverse;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 24px;
+    }
+
+    .btn {
+      width: 100%;
+      text-align: center;
+      padding: 16px 24px;
+    }
+
+    .btn-submit {
+      padding: 18px 24px;
+    }
+
+    /* Toast fits screen width */
+    .toast {
+      left: 16px;
+      right: 16px;
+      width: auto;
+      transform: translateY(20px);
+      white-space: normal;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    /* Success screen tighter */
+    .success-screen {
+      padding: 40px 16px;
+    }
+
+    .success-screen h2 {
+      font-size: 30px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .header h1 { font-size: 28px; }
+    .step-header h2 { font-size: 22px; }
+    .chip { padding: 9px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div class="header">
+    <div class="header-eyebrow">Confidential · Private</div>
+    <h1>Your <em>Love Story</em><br>Begins Here</h1>
+    <p class="header-sub">This intake form helps us understand you deeply — not just who you're looking for, but who you are. Take your time and be honest; the more we know, the better we can match. Most people complete it in 15–20 minutes.</p>
+    <div class="header-divider">
+      <span></span><div class="diamond"></div><span></span>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-wrap" id="progressWrap">
+    <div class="progress-meta">
+      <span class="progress-label">Your progress</span>
+      <span class="progress-count" id="stepCount">1 of 8</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width: 12.5%"></div>
+    </div>
+    <div class="step-dots" id="stepDots"></div>
+  </div>
+
+  <!-- STEP 1: Basic Info -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-header">
+      <div class="step-number">Step 01 — Basics</div>
+      <h2>Let's start with<br>the essentials</h2>
+      <p>Simple facts that help us know who we're working with.</p>
+    </div>
+    <div class="field-group">
+      <div class="field-row">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" placeholder="Your first name">
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" placeholder="Your last name">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com">
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" id="phoneInput" placeholder="(555) 000-0000" oninput="formatPhone(this)" maxlength="14">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Age</label>
+          <input type="number" placeholder="Your age" min="18" max="99">
+        </div>
+        <div class="field">
+          <label>Gender Identity</label>
+          <select>
+            <option value="" disabled selected>Select one</option>
+            <option>Man</option>
+            <option>Woman</option>
+            <option>Non-binary</option>
+            <option>Genderqueer</option>
+            <option>Transgender man</option>
+            <option>Transgender woman</option>
+            <option>Prefer to self-describe</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Occupation</label>
+          <input type="text" placeholder="What do you do?">
+        </div>
+        <div class="field">
+          <label>Education Level</label>
+          <select>
+            <option value="" disabled selected>Select one</option>
+            <option>High school diploma / GED</option>
+            <option>Trade / Vocational certification</option>
+            <option>Some college or Associate's degree</option>
+            <option>Bachelor's degree</option>
+            <option>Master's degree</option>
+            <option>Doctorate / Professional degree</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Cultural background / ethnicity</label>
+        <input type="text" placeholder="e.g. Italian-American, Nigerian, Korean, Latino…">
+      </div>
+      <div class="field">
+        <label>Languages spoken</label>
+        <input type="text" placeholder="e.g. English, Spanish, Mandarin…">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>City & State</label>
+          <input type="text" placeholder="e.g. New York, NY">
+        </div>
+        <div class="field">
+          <label>Willing to Relocate?</label>
+          <select>
+            <option value="" disabled selected>Select one</option>
+            <option>No — staying put</option>
+            <option>Maybe, for the right person</option>
+            <option>Yes, open to it</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>I am interested in dating</label>
+        <div class="chip-group" id="interestedIn">
+          <div class="chip" onclick="toggleChip(this)">Men</div>
+          <div class="chip" onclick="toggleChip(this)">Women</div>
+          <div class="chip" onclick="toggleChip(this)">Non-binary people</div>
+          <div class="chip" onclick="toggleChip(this)">Open to all</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Preferred contact method</label>
+        <div class="chip-group">
+          <div class="chip" onclick="toggleChip(this)">📱 Text message</div>
+          <div class="chip" onclick="toggleChip(this)">📧 Email</div>
+        </div>
+      </div>
+      <div class="field" id="consentField">
+        <div class="consent-wrap" onclick="toggleConsent()">
+          <div class="consent-box" id="consentBox"></div>
+          <p class="consent-text">I consent to being contacted by the matchmaking team via my preferred contact method. I understand my information will be kept strictly confidential and used solely for matchmaking purposes.</p>
+        </div>
+        <div class="error-msg" id="consentError" style="display:none">You must consent to being contacted before continuing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Lifestyle & Logistics -->
+  <div class="step-panel" id="step-2">
+    <div class="step-header">
+      <div class="step-number">Step 02 — Lifestyle</div>
+      <h2>How you live<br>& what you value</h2>
+      <p>Compatibility often lives in the details of daily life.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>Relationship Goal — what are you ultimately working toward?</label>
+        <div class="chip-group">
+          <div class="chip" onclick="toggleChip(this)">Long-term committed partnership</div>
+          <div class="chip" onclick="toggleChip(this)">Marriage</div>
+          <div class="chip" onclick="toggleChip(this)">Life partner (no marriage required)</div>
+          <div class="chip" onclick="toggleChip(this)">Meaningful companionship</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Children — Do you have any?</label>
+          <select>
+            <option value="" disabled selected>Select</option>
+            <option>No</option>
+            <option>Yes, they live with me</option>
+            <option>Yes, shared custody</option>
+            <option>Yes, grown / independent</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Do you want (more) children?</label>
+          <select>
+            <option value="" disabled selected>Select</option>
+            <option>Yes — I want children</option>
+            <option>Yes — I want more children</option>
+            <option>No — I'm happy with the children I have</option>
+            <option>No — I don't want children</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Religion / Spirituality</label>
+          <input type="text" placeholder="e.g. Catholic, Jewish, spiritual, atheist…">
+        </div>
+        <div class="field">
+          <label>How important is faith compatibility?</label>
+          <select>
+            <option value="" disabled selected>Select</option>
+            <option>Essential — must share my beliefs</option>
+            <option>Important but some flexibility</option>
+            <option>Not a priority</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Political Leaning</label>
+        <div class="chip-group">
+          <div class="chip" onclick="toggleChip(this)">Very liberal</div>
+          <div class="chip" onclick="toggleChip(this)">Liberal</div>
+          <div class="chip" onclick="toggleChip(this)">Moderate</div>
+          <div class="chip" onclick="toggleChip(this)">Conservative</div>
+          <div class="chip" onclick="toggleChip(this)">Very conservative</div>
+          <div class="chip" onclick="toggleChip(this)">Not political</div>
+          <div class="chip" onclick="toggleChip(this)">Prefer not to say</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How important is it to align politically with a partner?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Essential — we need to share the same views</option>
+          <option>Important, but some differences are fine</option>
+          <option>I'd prefer alignment but it's not a dealbreaker</option>
+          <option>Not important to me at all</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Your annual income range</label>
+          <select>
+            <option value="" disabled selected>Select range</option>
+            <option>Under $50k</option>
+            <option>$50k – $99k</option>
+            <option>$100k – $199k</option>
+            <option>$200k – $499k</option>
+            <option>$500k – $999k</option>
+            <option>$1M+</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Partner's income — relative to yours</label>
+          <select>
+            <option value="" disabled selected>Select one</option>
+            <option>I prefer my partner to earn more than me</option>
+            <option>I prefer we earn around the same</option>
+            <option>I'm comfortable earning more than my partner</option>
+            <option>No preference</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Lifestyle Habits</label>
+        <div class="chip-group" id="lifestyleChips">
+          <div class="chip" onclick="toggleChipSubstance(this)">🍷 Social drinker</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🚫 Non-drinker</div>
+          <div class="chip" data-substance="true" onclick="toggleChipSubstance(this)">🌿 Cannabis or other substances user</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🚬 Smoker</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🌱 Vegan / vegetarian</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🐾 Pet owner</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🏡 Homebody</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">🏃 Weekend adventurer</div>
+          <div class="chip" onclick="toggleChipSubstance(this)">✈️ Frequent traveler</div>
+        </div>
+      </div>
+      <div class="field" id="substanceDetailField" style="display:none">
+        <label>Which substances do you use? <span class="chip-hint">(select all that apply)</span></label>
+        <div class="chip-group" id="substanceChips">
+          <div class="chip" onclick="toggleChipHard(this)">🌿 Cannabis</div>
+          <div class="chip" onclick="toggleChipHard(this)">🍄 Psychedelics</div>
+          <div class="chip" onclick="toggleChipHard(this)">💊 MDMA / ecstasy</div>
+          <div class="chip" data-hard="true" onclick="toggleChipHard(this)">Cocaine</div>
+          <div class="chip" data-hard="true" onclick="toggleChipHard(this)">Prescription drugs non-medically</div>
+          <div class="chip" data-hard="true" onclick="toggleChipHard(this)">Heroin / opioids</div>
+          <div class="chip" data-hard="true" onclick="toggleChipHard(this)">Methamphetamine</div>
+        </div>
+      </div>
+      <div class="field" id="substanceFrequencyField" style="display:none">
+        <label>How often do you use?</label>
+        <select id="substanceFrequencySelect">
+          <option value="" disabled selected>Select one</option>
+          <option>Rarely — special occasions only</option>
+          <option>Occasionally — a few times a year</option>
+          <option>Regularly — most weekends</option>
+          <option>Frequently — multiple times a week</option>
+        </select>
+      </div>
+      <div id="hardDrugMessage" style="display:none; background: var(--rose-light); border: 1px solid var(--rose); border-radius: 6px; padding: 20px 24px;">
+        <p style="font-size:14px; color: var(--ink-soft); line-height:1.7;">
+          We appreciate your honesty. Our program isn't the right fit for everyone — unfortunately we're unable to move forward at this time. We hope you find what you're looking for.
+        </p>
+      </div>
+      <div class="field">
+        <label>How often do you travel for work?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Never / rarely</option>
+          <option>A few times a year</option>
+          <option>Monthly</option>
+          <option>Frequently — most weeks</option>
+          <option>I work remotely / from home</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How would you describe your relationship with your family?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Very close — central part of my daily life</option>
+          <option>Close — we stay connected and support each other</option>
+          <option>Warm but independent — we love each other from a distance</option>
+          <option>Cordial — we get along but aren't particularly close</option>
+          <option>Distant or estranged</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Introvert or Extrovert?</label>
+        <div class="scale-wrap">
+          <div class="scale-track" id="introScale">
+            <button class="scale-btn" onclick="selectScale('introScale',this)">1</button>
+            <button class="scale-btn" onclick="selectScale('introScale',this)">2</button>
+            <button class="scale-btn" onclick="selectScale('introScale',this)">3</button>
+            <button class="scale-btn" onclick="selectScale('introScale',this)">4</button>
+            <button class="scale-btn" onclick="selectScale('introScale',this)">5</button>
+          </div>
+          <div class="scale-labels"><span>Full introvert</span><span>Full extrovert</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Dating History & Self-Reflection -->
+  <div class="step-panel" id="step-3">
+    <div class="step-header">
+      <div class="step-number">Step 03 — Dating History</div>
+      <h2>Looking back<br>to move forward</h2>
+      <p>Self-awareness is the foundation of a great match. Be honest — this is confidential.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>Current relationship status</label>
+        <select id="relationshipStatusSelect" onchange="handleRelationshipStatus(this)">
+          <option value="" disabled selected>Select one</option>
+          <option>Single, never married</option>
+          <option>Divorced</option>
+          <option>Separated</option>
+          <option>Widowed</option>
+        </select>
+      </div>
+      <div id="separatedMessage" style="display:none; background: var(--rose-light); border: 1px solid var(--rose); border-radius: 6px; padding: 20px 24px;">
+        <p style="font-size:14px; color: var(--ink-soft); line-height:1.7;">
+          We work with clients who are fully ready to pursue a new relationship. At this time we are unable to accept applications from clients whose divorce has not yet been finalized. We'd love to work with you once that process is complete — please don't hesitate to reach out then.
+        </p>
+      </div>
+      <div class="field" id="marriageCountField" style="display:none">
+        <label>How many times have you been married?</label>
+        <select id="marriageCountSelect">
+          <option value="" disabled selected>Select one</option>
+          <option>Once</option>
+          <option>Twice</option>
+          <option>Three or more times</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How long was your longest relationship?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Less than 6 months</option>
+          <option>6 months – 1 year</option>
+          <option>1–3 years</option>
+          <option>3–7 years</option>
+          <option>7+ years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How long have you been single?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Less than 6 months</option>
+          <option>6–12 months</option>
+          <option>1–2 years</option>
+          <option>2–5 years</option>
+          <option>5+ years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Why did your last significant relationship end?</label>
+        <textarea placeholder="Be as candid as you're comfortable with — honesty here helps us understand where you are today."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Self Reflection -->
+  <div class="step-panel" id="step-4">
+    <div class="step-header">
+      <div class="step-number">Step 04 — Self Reflection</div>
+      <h2>Looking inward</h2>
+      <p>What you share here stays between us. The more openly you share, the better we can serve you.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>What do you know about yourself in relationships that you wish a partner knew early on?</label>
+        <textarea placeholder="Think about your emotional needs, communication style, or tendencies — things that have come up before and matter to the people close to you."></textarea>
+      </div>
+      <div class="field">
+        <label>What is the most important thing your significant relationships have taught you about yourself?</label>
+        <textarea placeholder="This might be the most revealing question on the form — take your time with it."></textarea>
+      </div>
+      <div class="field">
+        <label>Have you done any personal growth work around relationships?</label>
+        <div class="chip-group">
+          <div class="chip" onclick="toggleChip(this)">Therapy / counseling</div>
+          <div class="chip" onclick="toggleChip(this)">Couples therapy</div>
+          <div class="chip" onclick="toggleChip(this)">Self-help books / courses</div>
+          <div class="chip" onclick="toggleChip(this)">Coaching</div>
+          <div class="chip" onclick="toggleChip(this)">Meditation / mindfulness</div>
+          <div class="chip" onclick="toggleChip(this)">Not yet, but open to it</div>
+          <div class="chip" onclick="toggleChip(this)">No, and not interested</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Is there a type of person or dynamic you find yourself drawn to, even when it hasn't served you well?</label>
+        <textarea placeholder="This helps us understand your patterns so we can match you more intentionally — there's no wrong answer."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Personality & Values -->
+  <div class="step-panel" id="step-5">
+    <div class="step-header">
+      <div class="step-number">Step 05 — Who You Are</div>
+      <h2>Personality<br>& core values</h2>
+      <p>Beyond the résumé — what makes you <em>you</em>.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>How would your closest friends describe you? <span class="chip-hint">(choose up to 5)</span></label>
+        <div class="chip-group" data-max="5">
+          <div class="chip" onclick="toggleChip(this)">Loyal</div>
+          <div class="chip" onclick="toggleChip(this)">Funny</div>
+          <div class="chip" onclick="toggleChip(this)">Ambitious</div>
+          <div class="chip" onclick="toggleChip(this)">Adventurous</div>
+          <div class="chip" onclick="toggleChip(this)">Warm</div>
+          <div class="chip" onclick="toggleChip(this)">Intellectual</div>
+          <div class="chip" onclick="toggleChip(this)">Creative</div>
+          <div class="chip" onclick="toggleChip(this)">Sensitive</div>
+          <div class="chip" onclick="toggleChip(this)">Independent</div>
+          <div class="chip" onclick="toggleChip(this)">Spontaneous</div>
+          <div class="chip" onclick="toggleChip(this)">Dependable</div>
+          <div class="chip" onclick="toggleChip(this)">Empathetic</div>
+          <div class="chip" onclick="toggleChip(this)">Direct</div>
+          <div class="chip" onclick="toggleChip(this)">Laid-back</div>
+          <div class="chip" onclick="toggleChip(this)">Nurturing</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>What are your top 3 values in life? <span class="chip-hint">(choose exactly 3)</span></label>
+        <div class="chip-group" data-max="3" data-min="3">
+          <div class="chip" onclick="toggleChip(this)">Family</div>
+          <div class="chip" onclick="toggleChip(this)">Career & ambition</div>
+          <div class="chip" onclick="toggleChip(this)">Health & wellness</div>
+          <div class="chip" onclick="toggleChip(this)">Faith / spirituality</div>
+          <div class="chip" onclick="toggleChip(this)">Adventure & travel</div>
+          <div class="chip" onclick="toggleChip(this)">Financial security</div>
+          <div class="chip" onclick="toggleChip(this)">Community & giving back</div>
+          <div class="chip" onclick="toggleChip(this)">Creativity & self-expression</div>
+          <div class="chip" onclick="toggleChip(this)">Personal growth</div>
+          <div class="chip" onclick="toggleChip(this)">Friendship & social life</div>
+          <div class="chip" onclick="toggleChip(this)">Peace & simplicity</div>
+          <div class="chip" onclick="toggleChip(this)">Integrity & honesty</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How do you typically handle conflict?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>I address it head-on right away</option>
+          <option>I need time to process, then talk</option>
+          <option>I tend to avoid conflict</option>
+          <option>I'm a natural mediator / peacemaker</option>
+          <option>It depends on the situation</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What does your ideal Saturday look like?</label>
+        <textarea placeholder="Paint a picture — morning routine, what you'd do, who you'd be with…" style="min-height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label>Love Language — how do you most feel loved? <span class="chip-hint">(choose top 2)</span></label>
+        <div class="chip-group" data-max="2" data-min="2">
+          <div class="chip" onclick="toggleChip(this)">Words of affirmation</div>
+          <div class="chip" onclick="toggleChip(this)">Quality time</div>
+          <div class="chip" onclick="toggleChip(this)">Physical touch</div>
+          <div class="chip" onclick="toggleChip(this)">Acts of service</div>
+          <div class="chip" onclick="toggleChip(this)">Gift giving / receiving</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Green Flags -->
+  <div class="step-panel" id="step-6">
+    <div class="step-header">
+      <div class="step-number">Step 06 — Preferences</div>
+      <h2>What draws<br>you <em>in</em></h2>
+      <p>Tell us what genuinely excites you — qualities, traits, and vibes that make you lean forward.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>Age range you're open to</label>
+        <div class="field-row">
+          <div class="field">
+            <input type="number" placeholder="Minimum age" min="18">
+          </div>
+          <div class="field">
+            <input type="number" placeholder="Maximum age" max="99">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Top 3 green flag traits you're looking for <span class="chip-hint">(choose exactly 3)</span></label>
+        <div class="chip-group" data-max="3" data-min="3">
+          <div class="chip" onclick="toggleChip(this)">Emotionally available</div>
+          <div class="chip" onclick="toggleChip(this)">Great communicator</div>
+          <div class="chip" onclick="toggleChip(this)">Ambitious & driven</div>
+          <div class="chip" onclick="toggleChip(this)">Kind & generous</div>
+          <div class="chip" onclick="toggleChip(this)">Funny & playful</div>
+          <div class="chip" onclick="toggleChip(this)">Intellectually curious</div>
+          <div class="chip" onclick="toggleChip(this)">Financially stable</div>
+          <div class="chip" onclick="toggleChip(this)">Family-oriented</div>
+          <div class="chip" onclick="toggleChip(this)">Adventurous spirit</div>
+          <div class="chip" onclick="toggleChip(this)">Confident without arrogance</div>
+          <div class="chip" onclick="toggleChip(this)">Independent & secure</div>
+          <div class="chip" onclick="toggleChip(this)">Affectionate</div>
+          <div class="chip" onclick="toggleChip(this)">Spiritually aligned</div>
+          <div class="chip" onclick="toggleChip(this)">Consistent & reliable</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>What instantly attracts you to someone?</label>
+        <textarea placeholder="Could be a quality, a vibe, a way they carry themselves…" style="min-height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label>Your height</label>
+        <div class="field-row">
+          <div class="field">
+            <select>
+              <option value="" disabled selected>Select your height</option>
+              <option>4'0"</option><option>4'1"</option><option>4'2"</option><option>4'3"</option><option>4'4"</option>
+              <option>4'5"</option><option>4'6"</option><option>4'7"</option><option>4'8"</option><option>4'9"</option>
+              <option>4'10"</option><option>4'11"</option>
+              <option>5'0"</option><option>5'1"</option><option>5'2"</option><option>5'3"</option><option>5'4"</option>
+              <option>5'5"</option><option>5'6"</option><option>5'7"</option><option>5'8"</option><option>5'9"</option>
+              <option>5'10"</option><option>5'11"</option>
+              <option>6'0"</option><option>6'1"</option><option>6'2"</option><option>6'3"</option><option>6'4"</option>
+              <option>6'5"</option><option>6'6"</option><option>6'7"</option><option>6'8"</option><option>6'9"+</option>
+            </select>
+          </div>
+          <div class="field">
+            <select>
+              <option value="" disabled selected>Partner height preference</option>
+              <option>No preference</option>
+              <option>Must be taller than me</option>
+              <option>Must be shorter than me</option>
+              <option>Similar height to me</option>
+              <option>Taller preferred, not required</option>
+              <option>Shorter preferred, not required</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Other physical preferences</label>
+        <textarea placeholder="Build, style, anything else physical that genuinely matters to you…" style="min-height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label>How physically active are you day-to-day?</label>
+        <div class="scale-wrap">
+          <div class="scale-track" id="activeScale">
+            <button class="scale-btn" onclick="selectScale('activeScale',this)">1</button>
+            <button class="scale-btn" onclick="selectScale('activeScale',this)">2</button>
+            <button class="scale-btn" onclick="selectScale('activeScale',this)">3</button>
+            <button class="scale-btn" onclick="selectScale('activeScale',this)">4</button>
+            <button class="scale-btn" onclick="selectScale('activeScale',this)">5</button>
+          </div>
+          <div class="scale-labels"><span>Very sedentary</span><span>Very active</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How important is it that your partner shares your activity level?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Essential — we should be on the same level</option>
+          <option>Important, but some difference is fine</option>
+          <option>Nice to have, but not a dealbreaker</option>
+          <option>Not important to me at all</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Minimum education level you'd expect in a partner</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>No preference</option>
+          <option>High school diploma / GED</option>
+          <option>Trade / Vocational certification</option>
+          <option>Some college or Associate's degree</option>
+          <option>Bachelor's degree</option>
+          <option>Master's degree</option>
+          <option>Doctorate / Professional degree</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 7: Dealbreakers & Self-Awareness -->
+  <div class="step-panel" id="step-7">
+    <div class="step-header">
+      <div class="step-number">Step 07 — Dealbreakers</div>
+      <h2>What you<br>cannot overlook</h2>
+      <p>Knowing your limits is just as important as knowing your desires. No judgment here.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>Dealbreakers — I could not be with someone who… (select all that apply)</label>
+        <div class="chip-group">
+          <div class="chip" onclick="toggleChip(this)">Smokes cigarettes</div>
+          <div class="chip" onclick="toggleChip(this)">Uses recreational drugs regularly</div>
+          <div class="chip" onclick="toggleChip(this)">Drinks more than socially</div>
+          <div class="chip" onclick="toggleChip(this)">Has never been in a long-term relationship</div>
+          <div class="chip" onclick="toggleChip(this)">Has been divorced more than once</div>
+          <div class="chip" onclick="toggleChip(this)">Has young children at home</div>
+          <div class="chip" onclick="toggleChip(this)">Travels frequently for work</div>
+          <div class="chip" onclick="toggleChip(this)">Isn't close with their family</div>
+          <div class="chip" onclick="toggleChip(this)">Has pets (e.g. allergies)</div>
+          <div class="chip" onclick="toggleChip(this)">Different cultural background</div>
+          <div class="chip" onclick="toggleChip(this)">Very different social lifestyle</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Is there anything else that's truly non-negotiable for you?</label>
+        <textarea placeholder="Anything not listed above that you know you cannot work around…" style="min-height:80px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8: Final Thoughts -->
+  <div class="step-panel" id="step-8">
+    <div class="step-header">
+      <div class="step-number">Step 08 — Final Thoughts</div>
+      <h2>Almost there</h2>
+      <p>Almost there — a few last things before we get to know you in person.</p>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>How did you hear about us?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>Referral from a friend or client</option>
+          <option>Social media</option>
+          <option>Google search</option>
+          <option>Press / media</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What made you decide to try matchmaking?</label>
+        <textarea placeholder="Apps, timing, a friend's success story — we'd love to know…" style="min-height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label>When are you hoping to be in a relationship?</label>
+        <select>
+          <option value="" disabled selected>Select one</option>
+          <option>As soon as the right person comes along</option>
+          <option>Within the next 6 months</option>
+          <option>Within the next year</option>
+          <option>Within the next 1–2 years</option>
+          <option>No specific timeline — I'm open</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>On a scale of 1–5, how ready do you feel for a serious relationship right now?</label>
+        <div class="scale-wrap">
+          <div class="scale-track" id="readyScale">
+            <button class="scale-btn" onclick="selectScale('readyScale',this)">1</button>
+            <button class="scale-btn" onclick="selectScale('readyScale',this)">2</button>
+            <button class="scale-btn" onclick="selectScale('readyScale',this)">3</button>
+            <button class="scale-btn" onclick="selectScale('readyScale',this)">4</button>
+            <button class="scale-btn" onclick="selectScale('readyScale',this)">5</button>
+          </div>
+          <div class="scale-labels"><span>Not quite ready</span><span>Absolutely ready</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Is there anything about yourself — or anything at all — that you'd like us to know?</label>
+        <textarea placeholder="Some things don't fit into a box — we'd love to know anything we haven't captured." style="min-height:80px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav" id="navBar">
+    <button class="btn btn-ghost" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden">← Back</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Continue →</button>
+  </div>
+
+  <!-- Success -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✦</div>
+    <h2>Thank you —<br><em>we'll be in touch.</em></h2>
+    <p>Thank you for taking the time to share so much of yourself. Our team will review your responses and be in touch soon to schedule your intake call.</p>
+    <div class="header-divider" style="margin-top:32px"><span></span><div class="diamond"></div><span></span></div>
+  </div>
+
+</div>
+
+<style>
+  .chip-hint {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--ink-lighter);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 4px;
+  }
+
+  /* Example text textarea */
+  textarea.has-example:placeholder-shown + .example-overlay { display: block; }
+  .textarea-wrap { position: relative; }
+  .example-overlay {
+    display: none;
+    position: absolute;
+    top: 14px; left: 16px; right: 40px;
+    font-size: 14px;
+    color: var(--ink-lighter);
+    pointer-events: none;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .consent-wrap {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    transition: border-color 0.2s;
+  }
+  .consent-wrap:hover { border-color: var(--gold); }
+  .consent-wrap.checked { border-color: var(--gold); background: rgba(201,169,110,0.05); }
+
+  .consent-box {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    margin-top: 1px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+  .consent-box.checked {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+  }
+  .consent-box.checked::after { content: '✓'; }
+
+  .consent-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 300;
+  }
+
+  /* Validation styles */
+  .field-error input,
+  .field-error select,
+  .field-error textarea {
+    border-color: var(--rose) !important;
+    box-shadow: 0 0 0 3px rgba(196,136,122,0.15) !important;
+  }
+  .field-error .chip-group,
+  .field-error .scale-track {
+    outline: 2px solid var(--rose);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+  .error-msg {
+    font-size: 11px;
+    color: var(--rose);
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--cream);
+    padding: 14px 24px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0 4px 24px rgba(26,20,16,0.2);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast .toast-icon { color: var(--rose); margin-right: 8px; }
+</style>
+
+<div class="toast" id="toast"><span class="toast-icon">✦</span><span id="toastMsg">Please complete all fields before continuing.</span></div>
+
+<script>
+  const totalSteps = 8;
+  let currentStep = 1;
+  let toastTimer = null;
+
+  // Define which chip-groups and scales are required per step
+  // 'chips' = chip-group parent label text (partial), 'scales' = scale track IDs
+  const stepRequirements = {
+    1: {
+      inputs: ['first name','last name','email','languages spoken','city'],
+      selects: ['gender identity','willing to relocate','education level'],
+      chips: ['i am interested in dating','preferred contact method']
+    },
+    2: {
+      chips: ['relationship goal','lifestyle habits'],
+      selects: ['when are you hoping','do you have any','do you want','how important is faith','how important is it to align politically','your annual income range','partner\'s income'],
+      scales: ['activeScale','introScale']
+    },
+    3: {
+      selects: ['current relationship status','how long was your longest','how long have you been single'],
+      textareas: ['why did your last']
+    },
+    4: {
+      chips: ['have you done any personal growth'],
+      textareas: ['what do you know about yourself','what is the most important thing','is there a type of person']
+    },
+    5: {
+      chips: ['how would your closest friends','what are your top 3 values','love language'],
+      selects: ['how do you typically handle conflict'],
+      textareas: ['what does your ideal saturday']
+    },
+    6: {
+      inputs: ['minimum age','maximum age'],
+      selects: ['feet','partner height preference','how important is it that your partner shares'],
+      chips: ['top 3 green flag'],
+      textareas: ['what instantly attracts','other physical preferences']
+    },
+    7: {
+      textareas: ['is there anything else that\'s truly']
+    },
+    8: {
+      selects: ['how did you hear','when are you hoping'],
+      textareas: ['what made you decide'],
+      scales: ['readyScale']
+    }
+  };
+
+  function toggleChipSubstance(el) {
+    const group = el.closest('.chip-group');
+    const max = group ? parseInt(group.dataset.max) : null;
+    const currentSelected = group ? group.querySelectorAll('.chip.selected').length : 0;
+    if (!el.classList.contains('selected') && max && currentSelected >= max) {
+      showToast(`You can only choose up to ${max} here — deselect one first`);
+      group.style.animation = 'none';
+      group.offsetHeight;
+      group.style.animation = 'shake 0.35s ease';
+      return;
+    }
+    el.classList.toggle('selected');
+    // Show/hide substance detail field
+    const substanceChip = document.querySelector('[data-substance="true"]');
+    const detailField = document.getElementById('substanceDetailField');
+    if (substanceChip && detailField) {
+      const show = substanceChip.classList.contains('selected');
+      detailField.style.display = show ? 'flex' : 'none';
+      if (!show) {
+        // Deselect all substance chips and hide hard drug message
+        document.querySelectorAll('#substanceChips .chip').forEach(c => c.classList.remove('selected'));
+        document.getElementById('hardDrugMessage').style.display = 'none';
+        document.getElementById('nextBtn').disabled = false;
+        document.getElementById('nextBtn').style.opacity = '1';
+        document.getElementById('nextBtn').style.cursor = 'pointer';
+      }
+    }
+    const field = el.closest('.field');
+    if (field && el.classList.contains('selected')) {
+      field.classList.remove('field-error');
+      const err = field.querySelector('.error-msg');
+      if (err) err.remove();
+    }
+  }
+
+  function toggleChipHard(el) {
+    el.classList.toggle('selected');
+    // Check if any hard drug chip is selected
+    const hardSelected = document.querySelectorAll('#substanceChips [data-hard="true"].selected').length > 0;
+    const softSelected = document.querySelectorAll('#substanceChips .chip:not([data-hard="true"]).selected').length > 0;
+
+    // Hard stop message
+    document.getElementById('hardDrugMessage').style.display = hardSelected ? 'block' : 'none';
+    document.getElementById('nextBtn').disabled = hardSelected;
+    document.getElementById('nextBtn').style.opacity = hardSelected ? '0.4' : '1';
+    document.getElementById('nextBtn').style.cursor = hardSelected ? 'not-allowed' : 'pointer';
+
+    // Show frequency only if soft drugs selected and no hard drugs
+    const freqField = document.getElementById('substanceFrequencyField');
+    freqField.style.display = (softSelected && !hardSelected) ? 'flex' : 'none';
+    if (!softSelected || hardSelected) {
+      document.getElementById('substanceFrequencySelect').value = '';
+    }
+
+    // Clear error
+    const field = el.closest('.field');
+    if (field && el.classList.contains('selected')) {
+      field.classList.remove('field-error');
+      const err = field.querySelector('.error-msg');
+      if (err) err.remove();
+    }
+  }
+
+  let consentGiven = false;
+
+  function toggleConsent() {
+    consentGiven = !consentGiven;
+    const box = document.getElementById('consentBox');
+    const wrap = box.closest('.consent-wrap');
+    box.classList.toggle('checked', consentGiven);
+    wrap.classList.toggle('checked', consentGiven);
+    document.getElementById('consentError').style.display = 'none';
+  }
+
+  function formatPhone(input) {
+    let digits = input.value.replace(/\D/g, '').slice(0, 10);
+    let formatted = '';
+    if (digits.length > 0) formatted = '(' + digits.slice(0, 3);
+    if (digits.length >= 4) formatted += ') ' + digits.slice(3, 6);
+    if (digits.length >= 7) formatted += '-' + digits.slice(6, 10);
+    input.value = formatted;
+  }
+
+  function handleRelationshipStatus(sel) {
+    const isSeparated = sel.value === 'Separated';
+    const showMarriage = ['Divorced', 'Widowed'].includes(sel.value);
+
+    // Show/hide separated message and block next button
+    document.getElementById('separatedMessage').style.display = isSeparated ? 'block' : 'none';
+    document.getElementById('nextBtn').disabled = isSeparated;
+    document.getElementById('nextBtn').style.opacity = isSeparated ? '0.4' : '1';
+    document.getElementById('nextBtn').style.cursor = isSeparated ? 'not-allowed' : 'pointer';
+
+    // Show/hide marriage count
+    const marriageField = document.getElementById('marriageCountField');
+    const marriageSelect = document.getElementById('marriageCountSelect');
+    marriageField.style.display = showMarriage ? 'flex' : 'none';
+    if (!showMarriage) marriageSelect.value = '';
+
+    // Clear error on status field
+    const statusField = sel.closest('.field');
+    if (statusField) {
+      statusField.classList.remove('field-error');
+      const err = statusField.querySelector('.error-msg');
+      if (err) err.remove();
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  function clearErrors(panel) {
+    panel.querySelectorAll('.field-error').forEach(f => {
+      f.classList.remove('field-error');
+      const err = f.querySelector('.error-msg');
+      if (err) err.remove();
+    });
+  }
+
+  function markError(field, msg) {
+    field.classList.add('field-error');
+    if (!field.querySelector('.error-msg')) {
+      const e = document.createElement('div');
+      e.className = 'error-msg';
+      e.textContent = msg || 'This field is required';
+      field.appendChild(e);
+    }
+  }
+
+  function validateStep(stepNum) {
+    const panel = document.getElementById('step-' + stepNum);
+    clearErrors(panel);
+    let errors = 0;
+    let firstError = null;
+
+    // Validate text inputs
+    panel.querySelectorAll('input[type="text"]').forEach(input => {
+      const field = input.closest('.field');
+      if (!input.value.trim()) {
+        markError(field, 'Please fill in this field');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate email
+    panel.querySelectorAll('input[type="email"]').forEach(input => {
+      const field = input.closest('.field');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!input.value.trim()) {
+        markError(field, 'Please enter your email address');
+        errors++;
+        if (!firstError) firstError = field;
+      } else if (!emailRegex.test(input.value.trim())) {
+        markError(field, 'Please enter a valid email address (e.g. you@example.com)');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate phone
+    panel.querySelectorAll('input[type="tel"]').forEach(input => {
+      const field = input.closest('.field');
+      const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+      if (!input.value.trim()) {
+        markError(field, 'Please enter your phone number');
+        errors++;
+        if (!firstError) firstError = field;
+      } else if (!phoneRegex.test(input.value.trim())) {
+        markError(field, 'Please enter a valid phone number (e.g. +1 555 000 0000)');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate number inputs
+    panel.querySelectorAll('input[type="number"]').forEach(input => {
+      const field = input.closest('.field');
+      const val = input.value.trim();
+      const placeholder = input.placeholder.toLowerCase();
+      if (!val) {
+        markError(field, 'Please enter a value');
+        errors++;
+        if (!firstError) firstError = field;
+      } else if (placeholder.includes('age')) {
+        const num = parseInt(val);
+        const min = parseInt(input.min) || 18;
+        const max = parseInt(input.max) || 99;
+        if (isNaN(num) || num < min || num > max) {
+          markError(field, `Please enter a valid age between ${min} and ${max}`);
+          errors++;
+          if (!firstError) firstError = field;
+        }
+      }
+    });
+
+    // Cross-validate min/max age range if both present
+    if (stepNum === 5) {
+      const ageInputs = panel.querySelectorAll('input[type="number"]');
+      if (ageInputs.length === 2) {
+        const minAge = parseInt(ageInputs[0].value);
+        const maxAge = parseInt(ageInputs[1].value);
+        if (!isNaN(minAge) && !isNaN(maxAge) && minAge >= maxAge) {
+          const field = ageInputs[1].closest('.field');
+          markError(field, 'Maximum age must be greater than minimum age');
+          errors++;
+          if (!firstError) firstError = field;
+        }
+      }
+    }
+
+    // Validate all selects (skip hidden fields)
+    panel.querySelectorAll('select').forEach(sel => {
+      const field = sel.closest('.field');
+      if (field && field.style.display === 'none') return;
+      if (!sel.value) {
+        markError(field, 'Please make a selection');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate all textareas
+    panel.querySelectorAll('textarea').forEach(ta => {
+      const field = ta.closest('.field');
+      if (!ta.value.trim()) {
+        markError(field, 'Please share your thoughts here');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate chip groups
+    panel.querySelectorAll('.chip-group').forEach(group => {
+      const field = group.closest('.field');
+      if (field && field.style.display === 'none') return;
+      const selected = group.querySelectorAll('.chip.selected');
+      const min = parseInt(group.dataset.min) || 1;
+      const max = parseInt(group.dataset.max) || null;
+      if (selected.length < min) {
+        const msg = (group.dataset.min && group.dataset.max && group.dataset.min === group.dataset.max)
+          ? `Please choose exactly ${min}`
+          : `Please select at least one option`;
+        markError(field, msg);
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Validate scale tracks — one button must be selected
+    panel.querySelectorAll('.scale-track').forEach(track => {
+      const field = track.closest('.field');
+      const selected = track.querySelector('.scale-btn.selected');
+      if (!selected) {
+        markError(field, 'Please select a value on the scale');
+        errors++;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    if (errors > 0) {
+      showToast(`Please complete all ${errors} remaining field${errors > 1 ? 's' : ''} before continuing`);
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+
+    // Consent check for step 1
+    if (stepNum === 1 && !consentGiven) {
+      const consentError = document.getElementById('consentError');
+      consentError.style.display = 'block';
+      document.getElementById('consentField').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showToast('Please confirm your consent before continuing');
+      return false;
+    }
+
+    return true;
+  }
+
+  function buildDots() {
+    const container = document.getElementById('stepDots');
+    for (let i = 1; i <= totalSteps; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'step-dot' + (i === 1 ? ' active' : '');
+      dot.id = 'dot-' + i;
+      container.appendChild(dot);
+    }
+  }
+
+  function updateProgress() {
+    const pct = (currentStep / totalSteps) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('stepCount').textContent = currentStep + ' of ' + totalSteps;
+
+    for (let i = 1; i <= totalSteps; i++) {
+      const dot = document.getElementById('dot-' + i);
+      dot.className = 'step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+    }
+
+    document.getElementById('prevBtn').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+    const nextBtn = document.getElementById('nextBtn');
+    if (currentStep === totalSteps) {
+      nextBtn.textContent = 'Submit Form ✦';
+      nextBtn.className = 'btn btn-submit';
+    } else {
+      nextBtn.textContent = 'Continue →';
+      nextBtn.className = 'btn btn-primary';
+    }
+  }
+
+  function changeStep(dir) {
+    if (dir === 1) {
+      if (!validateStep(currentStep)) return;
+      if (currentStep === totalSteps) {
+        submitForm();
+        return;
+      }
+    }
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    currentStep += dir;
+    currentStep = Math.max(1, Math.min(totalSteps, currentStep));
+    const panel = document.getElementById('step-' + currentStep);
+    panel.classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function submitForm() {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    document.getElementById('navBar').style.display = 'none';
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('successScreen').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleChip(el) {
+    const group = el.closest('.chip-group');
+    const max = group ? parseInt(group.dataset.max) : null;
+    const currentSelected = group ? group.querySelectorAll('.chip.selected').length : 0;
+
+    if (!el.classList.contains('selected') && max && currentSelected >= max) {
+      showToast(`You can only choose up to ${max} here — deselect one first`);
+      group.style.animation = 'none';
+      group.offsetHeight;
+      group.style.animation = 'shake 0.35s ease';
+      return;
+    }
+
+    el.classList.toggle('selected');
+    const field = el.closest('.field');
+    if (field && el.classList.contains('selected')) {
+      field.classList.remove('field-error');
+      const err = field.querySelector('.error-msg');
+      if (err) err.remove();
+    }
+  }
+
+  function selectScale(groupId, btn) {
+    const track = document.getElementById(groupId);
+    track.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    // Clear error
+    const field = track.closest('.field');
+    if (field) {
+      field.classList.remove('field-error');
+      const err = field.querySelector('.error-msg');
+      if (err) err.remove();
+    }
+  }
+
+  // Clear errors on input/change for text fields
+  document.addEventListener('input', e => {
+    if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) {
+      const field = e.target.closest('.field');
+      if (field && field.classList.contains('field-error') && e.target.value.trim()) {
+        field.classList.remove('field-error');
+        const err = field.querySelector('.error-msg');
+        if (err) err.remove();
+      }
+    }
+  });
+
+  document.addEventListener('change', e => {
+    if (e.target.tagName === 'SELECT') {
+      const field = e.target.closest('.field');
+      if (field && e.target.value) {
+        field.classList.remove('field-error');
+        const err = field.querySelector('.error-msg');
+        if (err) err.remove();
+      }
+    }
+  });
+
+  buildDots();
+  updateProgress();
+</script>
+</body>
+</html>
